@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/html">
+<head>
+    <title>nQuery</title>
+    <link href="../static/warning.css" rel="stylesheet"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="../static/bootstrap/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="../static/bootstrap/css/bootstrap.min.css">
+    <script text="text/javascript" src="../static/js/jquery-3.1.1.js"> </script>
+</head>
+
+<body style="background-color: rgba(158, 158, 158, 0.23);">
+<script text="text/javascript">
+function changeColor(type) {
+    console.log("Changing color");
+    if(type == 1) {
+        var button1 = document.getElementById("text");
+        button1.style.backgroundColor="#38E41D";
+        button1.style.borderColor="#38E41D";
+
+        var button2 = document.getElementById("file");
+        button2.style.backgroundColor="#5bc0de";
+        button2.style.borderColor="##46b8da";
+    }
+    else {
+        var button1 = document.getElementById("file");
+        button1.style.backgroundColor="#38E41D";
+        button1.style.borderColor="#38E41D";
+
+        var button2 = document.getElementById("text");
+        button2.style.backgroundColor="#5bc0de";
+        button2.style.borderColor="##46b8da";
+    }
+
+}
+
+function getTable(table_data, column_names) {
+    console.log(column_names);
+    var rowCount = table_data.length;
+
+      console.log(rowCount);
+      if(rowCount > 0){
+          var columnCount = column_names.length;
+          console.log(columnCount);
+      }
+          var table = document.createElement("TABLE");
+          table.border = "1";
+
+          //Add the header row.
+          var row = table.insertRow(-1);
+          for (var i = 0; i < columnCount; i++) {
+              var headerCell = document.createElement("TH");
+              headerCell.innerHTML = column_names[i];
+              row.appendChild(headerCell);
+          }
+
+          //Add the data rows.
+          if(columnCount == 1){
+              for (var i = 0; i < rowCount; i++) {
+                row = table.insertRow(-1);
+                var cell = row.insertCell(-1);
+                cell.innerHTML = table_data[i];
+                cell.align="center";
+              }
+          }
+          else {
+            for (var i = 0; i < rowCount; i++) {
+                row = table.insertRow(-1);
+                for (var j = 0; j < columnCount; j++) {
+                      var cell = row.insertCell(-1);
+                      cell.innerHTML = table_data[i][j];
+                      cell.align="center";
+                }
+            }
+          }
+
+          var dvTable = document.getElementById("dvTable");
+          //dvTable.innerHTML = "";
+          dvTable.appendChild(table);
+
+
+
+}
+
+/*function filterFunction() {
+    var input, filter, ul, li, a, i;
+    input = document.getElementById("myInput");
+*    filter = input.value.toUpperCase();
+    div = document.getElementById("myDropdown");
+    a = div.getElementsByTagName("a");
+    for (i = 0; i < a.length; i++) {
+        if (a[i].innerHTML.toUpperCase().indexOf(filter) > -1) {
+            a[i].style.display = "";
+        } else {
+            a[i].style.display = "none";
+        }
+    }
+}
+*/
+
+$('#apply-form input').blur(function()
+{
+    if( $(this).val().length === 0 ) {
+        $(this).parents('p').addClass('warning');
+    }
+});
+
+function validateForm(type) {
+    var form = "input_text";
+    var input = "input";
+    if(type == 2) {
+        form = "input_file";
+        input = "input_file";
+    }
+    console.log("validating");
+    var x = document.forms[form][input].value;
+    if (x == "" && document.getElementById("warning_div") == null) {
+        var div = document.createElement("div");
+        div.id = "warning_div"
+        if(type == 1)
+            div.style.width = "20%";
+        else
+            div.style.width = "10%";
+        div.className = "my-notify-error";
+        if(type == 2)
+            div.innerHTML = "File Path is empty";
+        else
+            div.innerHTML = "Natural Language Statement is empty";
+
+        document.getElementById("ip_div").appendChild(div);
+
+        return false;
+    }
+    else if(x == "" && document.getElementById("warning_div") != null){
+        document.getElementById("warning_div").style.visibility="visible"
+        return false;
+    }
+    else
+    {
+        console.log("img123");
+        var div = document.createElement("div");
+        div.id = "loading_div"
+        div.style.width = "20%";
+        div.style.visibility="visible";
+        div.align="center";
+        var elem = document.createElement("img");
+        elem.src="../static/images/ajax-loader.gif";
+        elem.id="loading";
+        elem.alt="loading";
+        elem.style.width="100px";
+        elem.style.height="100px";
+        div.appendChild(elem)
+        if(type == 2)
+            document.getElementById("input_form_file").appendChild(div);
+        else
+            document.getElementById("input_form_text").appendChild(div);
+        console.log(document.getElementById("loading"));
+        return true;
+    }
+}
+
+
+
+function validatedd() {
+    var x = document.forms["ddform"]["myDropdown"].value;
+    if (x == "Choose here" && document.getElementById("dd_warning_div") == null) {
+        var div = document.createElement("div");
+        div.id = "dd_warning_div"
+        div.style.width = "40%";
+        div.className = "my-notify-error";
+        div.innerHTML = "Choose valid database";
+
+        document.getElementById("dropdown_div").appendChild(div);
+
+        return false;
+    }
+    else if (x == "Choose here" && document.getElementById("dd_warning_div") != null) {
+
+        return false;
+    }
+
+}
+
+function logout(){
+    console.log("logout");
+    window.location = "http://localhost:5000/login";
+}
+
+
+function clearWarning(){
+    var div = document.getElementById("dd_warning_div")
+    if(div != null)
+        div.parentNode.removeChild(div)
+}
+
+function showForm(){
+    var div = document.getElementById("warning_div")
+    if(div != null)
+        div.style.visibility="hidden";
+}
+
+function clear_div(){
+    console.log("clear");
+    if(document.getElementById("output") != null){
+        var elem = document.getElementById("output")
+        elem.parentNode.removeChild(elem);
+    }
+    if(document.getElementById("exec_show_bt") != null){
+        var elem = document.getElementById("exec_show_bt")
+        elem.parentNode.removeChild(elem);
+    }
+    if(document.getElementById("exec_store_bt") != null){
+        var elem = document.getElementById("exec_store_bt")
+        elem.parentNode.removeChild(elem);
+    }
+    if(document.getElementById("result") != null){
+        var elem = document.getElementById("result")
+        elem.parentNode.removeChild(elem);
+    }
+    if(document.getElementById("warning_div") != null){
+        var elem = document.getElementById("warning_div")
+        elem.parentNode.removeChild(elem);
+    }
+    if(document.getElementById("dvTable") != null){
+        var elem = document.getElementById("dvTable")
+        elem.parentNode.removeChild(elem);
+    }
+    if(document.getElementById("input") != null)
+        document.getElementById("input").value="";
+
+    if(document.getElementById("output_file") != null){
+        var elem = document.getElementById("output_file")
+        elem.parentNode.removeChild(elem);
+    }
+    if(document.getElementById("error_div") != null){
+        var elem = document.getElementById("error_div")
+        elem.parentNode.removeChild(elem);
+    }
+    if(document.getElementById("error_file_div") != null){
+        var elem = document.getElementById("error_file_div")
+        elem.parentNode.removeChild(elem);
+    }
+
+    if(document.getElementById("success_div") != null){
+        var elem = document.getElementById("success_div")
+        elem.parentNode.removeChild(elem);
+    }
+    if(document.getElementById("label") != null){
+        var elem = document.getElementById("label")
+        elem.parentNode.removeChild(elem);
+    }
+    if(document.getElementById("success_div_file") != null){
+        var elem = document.getElementById("success_div_file")
+        elem.parentNode.removeChild(elem);
+    }
+    if(document.getElementById("excel_file_div") != null){
+        var elem = document.getElementById("excel_file_div")
+        elem.parentNode.removeChild(elem);
+    }
+    if(document.getElementById("error_div_file") != null){
+        var elem = document.getElementById("error_div_file")
+        elem.parentNode.removeChild(elem);
+    }
+
+    if(document.getElementById("warning_div") != null){
+        var elem = document.getElementById("warning_div")
+        elem.parentNode.removeChild(elem);
+    }
+    if(document.getElementById("dvTable_file") != null){
+        var elem = document.getElementById("dvTable_file")
+        elem.parentNode.removeChild(elem);
+    }
+    if(document.getElementById("input_file") != null)
+        document.getElementById("input_file").value="";
+
+}
+
+function openfile(){
+    var op = "{{output_path}}"
+    console.log(op);
+
+    window.open(op, "_blank");
+}
+
+$(document).ready(function(){
+  //document.getElementById("myDropdown").focus();
+  var arr = {{ result|safe }};
+  console.log(arr);
+    $.each(arr, function (index, value) {
+    $('#myDropdown').append($('<option/>', {
+        value: value,
+        text : value
+    }));
+});
+});
+
+
+function textAreaAdjust(o) {
+  o.style.height = "1px";
+  o.style.height = (25+o.scrollHeight)+"px";
+}
+
+function success_error(correct, wrong) {
+    if(correct.length != 0) {
+        var success = document.getElementById("success_div_file");
+        var correct_q = "";
+        for(var i = 0; i < correct.length - 1; i++) {
+            correct_q = correct_q + correct[i] + ",";
+        }
+        correct_q = correct_q + correct[i];
+        success.innerHTML = "<strong>Success!</strong> Queries for statement number " + correct_q + " formed successfully";
+        success.style.display = "block";
+    }
+    if(wrong.length != 0) {
+        var error = document.getElementById("error_div_file");
+        var wrong_q = "";
+        for(var i = 0; i < wrong.length - 1; i++) {
+            wrong_q = wrong_q + wrong[i] + ",";
+        }
+        wrong_q = wrong_q + wrong[i];
+        error.innerHTML = "<strong>Error!</strong> Queries for statement number " + wrong_q + " failed";
+        error.style.display = "block";
+    }
+}
+
+</script>
+
+<div id="container" style="padding-bottom: 20px; background-color: black; color: white;">
+
+    <div class="row" id="title_div">
+        <div class="col-md-3">
+            <center>
+            &nbsp;  <label style="font-weight: 100;margin-top: 25px;font-size:22px;border-style: groove;border-radius: 5px;padding-left: 10px;padding-right: 10px;">Address:<i>  {{ ip }}</i></label>
+            </center>
+        </div>
+        <div class="col-md-6">
+        <center><h1 id="title" align="center"><span id="logo"><span>nQuery</span></span></h1></center>
+            <h2 id="subt" align="center"><span id="log1"><span><i>A Natural Language to SQL Translator</i></span></span></h2>
+        </div>
+        <div class="col-md-3" >
+            <button class="btn btn-info" id="logout" type="button" style="float:right;margin-top:10px;margin-right:10px;">Log Out</button>
+        </div>
+    </div>
+    <div class="row" id="details_div" style="margin-top: 30px;">
+        <!--<div class="col-md-1" style="float: left;"></div>-->
+        <div class="col-md-4" id="wel_div">
+            <center><label style="font-weight: 100; font-size:22px;border-style: groove;border-radius: 5px;padding-left: 5px;padding-right: 5px;">Welcome <i>{{ username }}</i></label></center>
+        </div>
+        <div class="col-md-4" id="dropdown_div" style="float: left;">
+            <center><form id="ddform" name = "ddform" action= "selected_db" method = "POST" >
+                    <select class="btn btn-default dropdown-toggle" onclick="clearWarning()" style="width:200px;" class="dropdown" name="myDropdown" id="myDropdown" value="Databases">
+                        <option selected disabled>Choose here</option>
+                    </select>
+                    <button type="submit"class="btn btn-info" id="selectDB_bt" onclick="return validatedd()">Select Database</button>
+            </form></center>
+        </div>
+        <div class="col-md-4" id="selecteddb_div">
+            {% if db %}
+            <center><label style="font-weight: 100; font-size:22px;border-style: groove;border-radius: 5px;padding-left: 5px;padding-right: 5px;">Selected Database:&nbsp;<i>{{database}}</i></label></center>
+            {% endif %}
+        </div>
+        <!--<div class="col-md-1" style="float: left;"></div>-->
+    </div>
+</div>
+
+    <div class="col-md-1"></div>
+</div>
+<br/>
+
+<div id="ip_div">
+    {% if db %}
+    <div class="row" id="option_row">
+        <div class="col-md-3"></div>
+        <div class="col-md-6">
+            <center>
+                <form name="opt_form" id="opt_form" method="POST" action="handle_option">
+                    <button class="btn btn-info" id="text" type="submit" name="opt_button" value="text_bt">Text Input</button>
+                    <button class="btn btn-info" id="file" type="submit" name="opt_button" value="file_bt">File Input</button>
+                </form>
+            </center>
+        </div>
+        <div class="col-md-3"></div>
+    </div>
+
+<center>
+    <!--<div><img src="../static/images/ajax-loader.gif" style="width:20px;height:20px;"></div>-->
+    {% if opt_type %}
+    <script>
+        changeColor(1);
+    </script>
+    <form name = "input_text" id="input_form_text" action="query_process" method = "POST">
+        <div class="container">
+            <div class="login-box animated fadeInUp">
+
+                <br/>
+                 {% if db %}
+                <div class="input-group" style="width:60%;">
+
+                    <input type="text" class="form-control" id="input" name="input" value="{{nlq}}" onclick="showForm()" placeholder="Natural Language Statement" />
+                    <span class="input-group-btn">
+                        <button class="btn btn-default" type="button" value="clear_bt" style="background-color: #5bc0de; border-color: #46b8da; color: white;" onclick="return clear_div();">Clear</button>
+                    </span>
+                </div>
+                <br/>
+                <button class="btn btn-info" type="submit" name="query_button" value="gener_bt" style="margin-bottom:20px;" onclick="return validateForm(1)">Generate SQL Query</button>
+                <br/>
+                 {% endif %}
+                {% if error %}
+                <div id="error_div" name="error_div" style="width:65%" class="alert alert-danger">
+                    <strong>Error!</strong> {{error_string}}
+                </div>
+                {% endif %}
+                {% if generate %}
+                <textarea class="form-control" id="output" name="output" wrap="hard" readonly style="width: 60%;" onkeyup="textAreaAdjust(this)" style="overflow:hidden">{{sql_query}}</textarea>
+                <br/>
+                <button class="btn btn-info" type="submit" id="exec_show_bt" name="query_button" value="exec_show_bt" style="margin-bottom:20px;">Execute Query & Show Results</button>
+                <button class="btn btn-info" type="submit" id="exec_store_bt" name="query_button" value="exec_store_bt" style="margin-bottom:20px;">Execute Query & Store Results</button>
+                <br/>
+                {% endif %}
+
+                {% if exec_flag %}
+
+                    {% if excel_file_flag %}
+                        <br/>
+                        <div id="excel_file_div" style="width:45%;" class="alert alert-success">
+                            {{output_msg}}
+                        </div>
+                    {% endif %}
+
+                    {% if show_table_flag %}
+                        <br/>
+                        <div id="dvTable" class="table table-striped"></div>
+                        <script type="text/javascript">
+
+                            var arr = {{query_result|tojson}};
+                            console.log(arr);
+                            var column_names = {{column_names|tojson}};
+                            getTable(arr, column_names);
+                        </script>
+                    {% endif %}
+
+                {% endif %}
+            </div>
+        </div>
+    </form>
+    {% elif opt_type2 %}
+        <script>
+            changeColor(2);
+        </script>
+        <form name = "input_file" id="input_form_file" action="query_process_file" method = "POST">
+        <div class="container">
+            <div class="login-box animated fadeInUp">
+
+                <br/>
+                 {% if db %}
+                <div class="input-group" style="width:60%;">
+
+                    <input type="text" class="form-control" id="input_file" name="input_file" value="{{nlq}}" onclick="showForm()" placeholder="File Path" />
+                    <span class="input-group-btn">
+                        <button class="btn btn-default" type="button" value="clear_bt" style="background-color: #5bc0de; border-color: #46b8da; color: white;" onclick="return clear_div();">Clear</button>
+                    </span>
+                </div>
+                <br/>
+                <button class="btn btn-info" type="submit" name="query_button1" value="gener_bt1" style="margin-bottom:20px;" onclick="return validateForm(2)">Generate SQL Query</button>
+                <br/>
+                 {% endif %}
+                {% if error %}
+                <div id="error_file_div" name="error_file_div" style="width:50%" class="alert alert-danger">
+                    <strong>Error!</strong> {{error_string}}
+                </div>
+                {% endif %}
+                {% if generate %}
+
+                <div id="success_div_file" style="width:45%; display:none;" class="alert alert-success">
+                    Success! SQL queries have been generated
+                </div>
+                <div id="error_div_file" style="width:45%; display:none;" class="alert alert-danger">
+                    Success! SQL queries have been generated
+                </div>
+                <script>
+                    var correct = {{correct|tojson}}
+                    var wrong = {{wrong|tojson}}
+                    console.log(correct + "|" + wrong)
+                    success_error(correct, wrong)
+                </script>
+                <label id="label">Output queries stored in:<i>{{output_path}}</i></label>
+                <br/>
+
+                {% endif %}
+                {% if exec_flag %}
+                <!--<textarea class="form-control" id="result" name="result" wrap="hard" readonly style="width: 60%;">{{query_result}}</textarea>-->
+                <br/>
+                <div id="dvTable_file" class="table table-striped"></div>
+                <script type="text/javascript">
+                    var arr = {{query_result|tojson}};
+                    var column_names = {{column_names|tojson}};
+                    getTable(arr, column_names);
+                </script>
+
+                {% endif %}
+            </div>
+        </div>
+    </form>
+
+     {% endif %}
+    {% endif %}
+</center>
+</div>
+<script>
+    $('#my-button').click(function(){
+    console.log("File");
+    $('#my-file').click();
+    //$('input[name=uploadFileOne]').val($('#my-file).val());
+});
+$(document).ready(function(){
+        $('input[type="file"]').change(function(e){
+            var fileName = e.target.files[0].name;
+            alert('The file "' + fileName +  '" has been selected.');
+        });
+    });
+
+    $('#myDropdown').focus(function() {
+		$('label[for="myDropdown"]').addClass('selected');
+	});
+	$('#myDropdown').blur(function() {
+		$('label[fvor="myDropdown"]').removeClass('selected');
+	});
+
+$(document).ready(function(){
+
+                                $('#logout').click(function(){
+                                    console.log("-----");
+                                    $.ajax({
+                                      type: 'POST',
+                                      url: '/logout',
+                                      success: function(data){
+                                      console.log("logout");
+                                        window.location.replace("/login");
+
+                                      }
+                                    });
+                                });
+
+                           });
+
+
+</script>
+</body>
+<style>
+    h1#title {
+        font-family: 'Roboto Slab', serif;
+        font-size: 5.0em;
+        margin: 0 auto;
+	}
+</style>
+</html>

@@ -1,0 +1,117 @@
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<title>Database Login Page</title>
+    <link href="../static/warning.css" rel="stylesheet"/>
+    <script text="text/javascript" src="../static/js/jquery-3.1.1.js"> </script>
+    <script src="../static/bootstrap/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="../static/bootstrap/css/bootstrap.min.css">
+</head>
+
+<style>
+    h1#title {
+        font-family: 'Roboto Slab', serif;
+        font-size: 6.0em;
+        margin: 0 auto;
+	}
+</style>
+
+<body style="background-color: rgba(158, 158, 158, 0.23);">
+
+    <div class="top" style="padding-bottom: 20px; background-color: black; color: white;">
+        <center>
+            <h1 id="title" align="center"><span id="logo"><span>nQuery</span></span></h1>
+            <h2 id="subt" align="center"><span id="log1"><span><i>A Natural Language to SQL Translator</i></span></span></h2>
+        </center>
+    </div>
+
+    <form name = "ip_form" action= "loginDetails" method = "POST" onsubmit="return checkFields()" style="padding-top: 100px;">
+        <!-- <div class="container"> -->
+        <center>
+            <div class="panel panel-primary" id="login_div" style="max-width:25%;">
+                <div class="panel-heading" style="font-size: 23px;"> Database Log In </div>
+
+                <div class="panel-body">
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="IP" name="IP" placeholder="IP Address" onclick="clearWarning()" style="max-width: 80%;">
+                    </div>
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="username" name="username" placeholder="username" onclick="clearWarning()" style="max-width: 80%;">
+                    </div>
+                    <div class="form-group">
+                        <input type="password" class="form-control" id="password" name="password" placeholder="password" onclick="clearWarning()" style="max-width: 80%;">
+                    </div>
+                </div>
+                <div class="panel-footer">
+                    <button type="submit" class="btn btn-info">Sign In</button>
+                </div>
+                {% if invalid %}
+                        <div class="my-notify-error" id="invalid_warn_div">Invalid Login Details</div>
+                {% endif %}
+            </div>
+        </center>
+    </form>
+</body>
+
+<script>
+function clearWarning(){
+    var div = document.getElementById("warning_div")
+    if(div != null)
+        div.style.display="none";
+    var div = document.getElementById("invalid_warn_div")
+
+    if(div != null) {
+        //console.log("yz");
+        div.style.display="none";
+        window.location = "http://localhost:5000/login";
+    }
+}
+
+function checkFields() {
+    var ip = document.forms["ip_form"]["IP"].value;
+    var username = document.forms["ip_form"]["username"].value;
+    var password = document.forms["ip_form"]["password"].value;
+    if (ip == "" || username == "" || password == "") {
+        var div = document.getElementById("warning_div")
+        if(div == null) {
+        var div = document.createElement("div");
+        div.id = "warning_div"
+        //div.style.width = "20%";
+        div.className = "my-notify-error";
+        div.innerHTML = "Some fields are empty";
+
+        document.getElementById("login_div").appendChild(div);
+        }
+        else {
+            div.style.display = "block";
+        }
+        return false;
+    }
+}
+
+	$(document).ready(function () {
+    	$('#logo').addClass('animated fadeInDown');
+    	$("input:text:visible:first").focus();
+	});
+	$('#IP').focus(function() {
+		$('label[for="IP"]').addClass('selected');
+	});
+	$('#IP').blur(function() {
+		$('label[for="IP"]').removeClass('selected');
+	});
+	$('#username').focus(function() {
+		$('label[for="username"]').addClass('selected');
+	});
+	$('#username').blur(function() {
+		$('label[for="username"]').removeClass('selected');
+	});
+	$('#password').focus(function() {
+		$('label[for="password"]').addClass('selected');
+	});
+	$('#password').blur(function() {
+		$('label[for="password"]').removeClass('selected');
+	});
+</script>
+
+</html>
